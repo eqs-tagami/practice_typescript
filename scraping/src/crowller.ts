@@ -1,13 +1,23 @@
-import superagent from 'superagent'
+import superagent from 'superagent';
+import cheerio from 'cheerio';
 
 class Crowller {
-  private url = "url"
+  private url = "https://weather.goo.ne.jp/weather/division-1/130010/"
   constructor(){
     this.getRawHtml();
   }
   async getRawHtml(){
     const result = await superagent.get(this.url);
-    console.log(result.text)
+    this.getJobInfo(result.text);
+  }
+
+  getJobInfo(html:string){
+    const $ = cheerio.load(html)
+    const jobItems = $('.weatherimg');
+    jobItems.map((index, element)=>{
+      const companyName = $(element).find('.weather').text();
+      console.log(companyName)
+    })
   }
 }
 
